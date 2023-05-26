@@ -81,6 +81,7 @@ const getData = async function (query) {
   } catch (err) {
     console.error(err);
     alert(err);
+    location.reload();
   }
 };
 
