@@ -47,12 +47,12 @@ body {
   border-radius: 20px;
   padding: 10px;
   border: 1px solid #ccc;
-  width: 400px;
+  width: 200px;
 }
 
 .cute-button {
-  border-radius: 40px;
-  padding: 20px 40px;
+  border-radius: 20px;
+  padding: 10px 20px;
   background-color: #f44336;
   color: #fff;
   border: none;
