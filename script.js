@@ -89,6 +89,7 @@ const getPics = async function (query) {
   } catch (err) {
     alert(err);
     console.error(err);
+    location.reload();
   }
 };
 
