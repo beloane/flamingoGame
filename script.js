@@ -80,9 +80,11 @@ const getPics = async function (query) {
 
     const picElement = document.createElement("img");
     picElement.src = pic.src;
-    picContainer.innerHTML = "";
-    picContainer.prepend(picElement);
-    document.querySelector(".round-input").value = "";
+    picElement.addEventListener("load", function () {
+      picContainer.innerHTML = "";
+      picContainer.prepend(picElement);
+      document.querySelector(".round-input").value = "";
+    });
   } catch (err) {
     alert(err);
     console.error(err);
