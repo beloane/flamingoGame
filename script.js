@@ -6,7 +6,8 @@ const submitButton = document.querySelector(".bottom-container");
 
 const getPics = async function (query) {
   try {
-    const client = createClient(process.env.API_KEY_PEXEL);
+    // const client = createClient(process.env.API_KEY_PEXEL);
+    const client = createClient(API_KEY_PEXEL);
 
     const res = await client.photos.search({ query, per_page: 1 });
 
