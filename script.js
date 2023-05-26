@@ -15,6 +15,14 @@ const config = new Configuration({ apiKey: openaiKey });
 delete config.baseOptions.headers["User-Agent"];
 const openai = new OpenAIApi(config);
 
+const timeout = function (s) {
+  return new Promise(function (_, reject) {
+    setTimeout(function () {
+      reject(new Error(`Request took too long! Timeout after ${s} second`));
+    }, s * 1000);
+  });
+};
+
 const getText = async function (message) {
   try {
     textContainer.innerHTML = "";
@@ -25,14 +33,17 @@ const getText = async function (message) {
         </svg>
     </div> 
           `;
-    textContainer.insertAdjacentHTML("afterbegin", spinner);
-    const res = await openai.createChatCompletion({
+
+    const fetch = openai.createChatCompletion({
       model: "gpt-3.5-turbo",
       messages: [
         { role: "system", content: preConfig },
         { role: "user", content: message },
       ],
     });
+
+    textContainer.insertAdjacentHTML("afterbegin", spinner);
+    const res = await Promise.race([fetch, timeout(7)]);
     const aiRes = res.data.choices[0].message.content;
     if (!aiRes) return;
 
@@ -43,6 +54,7 @@ const getText = async function (message) {
     textContainer.innerHTML = "";
     textContainer.insertAdjacentHTML("afterbegin", html);
   } catch (err) {
+    alert(err);
     console.error(err);
   }
 };
