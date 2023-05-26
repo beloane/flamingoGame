@@ -15,6 +15,14 @@ const config = new Configuration({ apiKey: openaiKey });
 delete config.baseOptions.headers["User-Agent"];
 const openai = new OpenAIApi(config);
 
+const spinner = `
+    <div class="spinner">
+        <svg>
+          <use href="${icons}#icon-loader"></use>
+        </svg>
+    </div> 
+          `;
+
 const timeout = function (s) {
   return new Promise(function (_, reject) {
     setTimeout(function () {
@@ -26,13 +34,7 @@ const timeout = function (s) {
 const getText = async function (message) {
   try {
     textContainer.innerHTML = "";
-    const spinner = `
-    <div class="spinner">
-        <svg>
-          <use href="${icons}#icon-loader"></use>
-        </svg>
-    </div> 
-          `;
+    textContainer.insertAdjacentHTML("afterbegin", spinner);
 
     const fetch = openai.createChatCompletion({
       model: "gpt-3.5-turbo",
@@ -42,7 +44,6 @@ const getText = async function (message) {
       ],
     });
 
-    textContainer.insertAdjacentHTML("afterbegin", spinner);
     const res = await Promise.race([fetch, timeout(12)]);
     const aiRes = res.data.choices[0].message.content;
     if (!aiRes) return;
@@ -61,6 +62,9 @@ const getText = async function (message) {
 
 const getPics = async function (query) {
   try {
+    picContainer.innerHTML = "";
+    picContainer.insertAdjacentHTML("afterbegin", spinner);
+
     const client = createClient(pexel);
 
     const res = await client.photos.search({ query, per_page: 1 });
@@ -92,8 +96,8 @@ eventTypes.forEach((event) => {
     if (e.key === "Enter") {
       // Functionality
       const inputText = document.querySelector(".round-input").value;
-      getPics(inputText);
       getText(inputText);
+      getPics(inputText);
     }
 
     if (event === "click") {
@@ -101,8 +105,8 @@ eventTypes.forEach((event) => {
       if (!clicked) return;
       // Functionality
       const inputText = document.querySelector(".round-input").value;
-      getPics(inputText);
       getText(inputText);
+      getPics(inputText);
     }
   });
 });
