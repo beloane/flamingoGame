@@ -50,3 +50,5 @@ eventTypes.forEach((event) => {
     }
   });
 });
+
+console.log("Welcome");
