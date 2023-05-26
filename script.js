@@ -31,13 +31,10 @@ const timeout = function (s) {
   });
 };
 
-const getData = async function (query) {
+const getText = async function (query) {
   try {
     textContainer.innerHTML = "";
     textContainer.insertAdjacentHTML("afterbegin", spinner);
-
-    picContainer.innerHTML = "";
-    picContainer.insertAdjacentHTML("afterbegin", spinner);
 
     const fetch = openai.createChatCompletion({
       model: "gpt-3.5-turbo",
@@ -57,18 +54,28 @@ const getData = async function (query) {
 `;
     textContainer.innerHTML = "";
     textContainer.insertAdjacentHTML("afterbegin", html);
+  } catch (err) {
+    alert(err);
+    console.error(err);
+  }
+};
+
+const getPics = async function (query) {
+  try {
+    picContainer.innerHTML = "";
+    picContainer.insertAdjacentHTML("afterbegin", spinner);
 
     const client = createClient(pexel);
 
-    const resPhoto = await client.photos.search({ query, per_page: 1 });
+    const res = await client.photos.search({ query, per_page: 1 });
 
-    if (resPhoto.photos.length === 0)
+    if (res.photos.length === 0)
       throw new Error(`Word does not exist! Try somthing else ;)`);
 
     const pic = {
-      id: resPhoto.photos[0].id,
-      alt: resPhoto.photos[0].alt,
-      src: resPhoto.photos[0].src.landscape,
+      id: res.photos[0].id,
+      alt: res.photos[0].alt,
+      src: res.photos[0].src.landscape,
     };
 
     const picElement = document.createElement("img");
@@ -79,71 +86,10 @@ const getData = async function (query) {
       document.querySelector(".round-input").value = "";
     });
   } catch (err) {
-    console.error(err);
     alert(err);
-    location.reload();
+    console.error(err);
   }
 };
-
-// const getText = async function (message) {
-//   try {
-//     textContainer.innerHTML = "";
-//     textContainer.insertAdjacentHTML("afterbegin", spinner);
-
-//     const fetch = openai.createChatCompletion({
-//       model: "gpt-3.5-turbo",
-//       messages: [
-//         { role: "system", content: preConfig },
-//         { role: "user", content: message },
-//       ],
-//     });
-
-//     const res = await Promise.race([fetch, timeout(12)]);
-//     const aiRes = res.data.choices[0].message.content;
-//     if (!aiRes) return;
-
-//     const html = `
-//       <h1>${message}</h1>
-//       <p>${aiRes}</p>
-// `;
-//     textContainer.innerHTML = "";
-//     textContainer.insertAdjacentHTML("afterbegin", html);
-//   } catch (err) {
-//     alert(err);
-//     console.error(err);
-//   }
-// };
-
-// const getPics = async function (query) {
-//   try {
-//     picContainer.innerHTML = "";
-//     picContainer.insertAdjacentHTML("afterbegin", spinner);
-
-//     const client = createClient(pexel);
-
-//     const res = await client.photos.search({ query, per_page: 1 });
-
-//     if (res.photos.length === 0)
-//       throw new Error(`Word does not exist! Try somthing else ;)`);
-
-//     const pic = {
-//       id: res.photos[0].id,
-//       alt: res.photos[0].alt,
-//       src: res.photos[0].src.landscape,
-//     };
-
-//     const picElement = document.createElement("img");
-//     picElement.src = pic.src;
-//     picElement.addEventListener("load", function () {
-//       picContainer.innerHTML = "";
-//       picContainer.prepend(picElement);
-//       document.querySelector(".round-input").value = "";
-//     });
-//   } catch (err) {
-//     alert(err);
-//     console.error(err);
-//   }
-// };
 
 const eventTypes = ["click", "keydown"];
 eventTypes.forEach((event) => {
@@ -152,10 +98,8 @@ eventTypes.forEach((event) => {
     if (e.key === "Enter") {
       // Functionality
       const inputText = document.querySelector(".round-input").value;
-      // getText(inputText);
-      // getPics(inputText);
-
-      getData(inputText);
+      getText(inputText);
+      getPics(inputText);
     }
 
     if (event === "click") {
@@ -163,9 +107,8 @@ eventTypes.forEach((event) => {
       if (!clicked) return;
       // Functionality
       const inputText = document.querySelector(".round-input").value;
-      // getText(inputText);
-      // getPics(inputText);
-      getData(inputText);
+      getText(inputText);
+      getPics(inputText);
     }
   });
 });
