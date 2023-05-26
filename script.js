@@ -43,7 +43,7 @@ const getText = async function (message) {
     });
 
     textContainer.insertAdjacentHTML("afterbegin", spinner);
-    const res = await Promise.race([fetch, timeout(7)]);
+    const res = await Promise.race([fetch, timeout(12)]);
     const aiRes = res.data.choices[0].message.content;
     if (!aiRes) return;
 
