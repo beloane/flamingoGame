@@ -1,13 +1,54 @@
 import { createClient } from "pexels";
+import { Configuration, OpenAIApi } from "openai";
+import icons from "./icons.svg";
 
 const picContainer = document.querySelector(".picture-container");
 const textContainer = document.querySelector(".text-container");
 const submitButton = document.querySelector(".bottom-container");
 
+const preConfig = `imagine you are a 4 year old child, and you like giving explanations as a dictionary about certain input words. You will output in you own words as being a 4 year old kid the definition of the given word in one sentence, without repeating the word it's self. if you undertood you task, answer with yes!`;
+
+const pexel = process.env.API_KEY_PEXEL;
+const openaiKey = process.env.API_KEY_OPENAI;
+
+const config = new Configuration({ apiKey: openaiKey });
+delete config.baseOptions.headers["User-Agent"];
+const openai = new OpenAIApi(config);
+
+const getText = async function (message) {
+  try {
+    textContainer.innerHTML = "";
+    const spinner = `
+    <div class="spinner">
+        <svg>
+          <use href="${icons}#icon-loader"></use>
+        </svg>
+    </div> 
+          `;
+    textContainer.insertAdjacentHTML("afterbegin", spinner);
+    const res = await openai.createChatCompletion({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { role: "system", content: preConfig },
+        { role: "user", content: message },
+      ],
+    });
+    const aiRes = res.data.choices[0].message.content;
+    if (!aiRes) return;
+
+    const html = `
+      <h1>${message}</h1>
+      <p>${aiRes}</p>
+`;
+    textContainer.innerHTML = "";
+    textContainer.insertAdjacentHTML("afterbegin", html);
+  } catch (err) {
+    console.error(err);
+  }
+};
+
 const getPics = async function (query) {
   try {
-    // const client = createClient(process.env.API_KEY_PEXEL);
-    const pexel = process.env.API_KEY_PEXEL;
     const client = createClient(pexel);
 
     const res = await client.photos.search({ query, per_page: 1 });
@@ -40,6 +81,7 @@ eventTypes.forEach((event) => {
       // Functionality
       const inputText = document.querySelector(".round-input").value;
       getPics(inputText);
+      getText(inputText);
     }
 
     if (event === "click") {
@@ -48,8 +90,7 @@ eventTypes.forEach((event) => {
       // Functionality
       const inputText = document.querySelector(".round-input").value;
       getPics(inputText);
+      getText(inputText);
     }
   });
 });
-
-console.log("Welcome");
