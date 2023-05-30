@@ -1,3 +1,4 @@
-# Flamingo Kid Project
+# Flamingo Fun Facts Project
 
-Simple fun guessing game application with AI and fun pictures!
+Simple fun facts game using pexel picture API and OpenAI chat GPT API
+Refactored in MVC style
