@@ -1,6 +1,6 @@
 import { createClient } from "pexels";
 import { Configuration, OpenAIApi } from "openai";
-import icons from "./icons.svg";
+import icons from "../img/icons.svg";
 
 const picContainer = document.querySelector(".picture-container");
 const textContainer = document.querySelector(".text-container");
