@@ -10,7 +10,7 @@ body {
   align-items: center;
   justify-content: space-around;
   height: 100vh;
-  margin: 20px;
+  padding: 10px;
   box-sizing: border-box;
 }
 
